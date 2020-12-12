@@ -1,0 +1,80 @@
+.addCategory {
+  height: 200px;
+  width: 300px;
+  border-radius: 10px;
+  background-color: #e760bf;
+  margin: 10px;
+}
+
+.addCategory__items {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.addCategory__itemsIcon {
+  color: #dcdcdc;
+  transition: 200ms color ease-in;
+  cursor: pointer;
+  font-weight: 300;
+  margin-bottom: -20px;
+}
+
+.addCategory__itemsIcon > .MuiSvgIcon-root {
+  font-size: 100px;
+  font-weight: 100;
+}
+
+.addCategory__itemsIcon:hover {
+  color: rgb(255, 255, 255);
+}
+
+.addCategory__items > p {
+  font-size: 20px;
+  font-weight: 700;
+  color: #dcdcdc;
+}
+
+.dialog {
+  width: 400px;
+  padding: 10px;
+}
+
+.dialog__buttons {
+  padding: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dialog__buttons > button {
+  margin: 5px;
+  padding: 7px 15px;
+  cursor: pointer;
+  border: 1px solid rgb(165, 165, 165);
+  border-radius: 5%;
+  /* background-color: #f8f8f8; */
+  text-transform: capitalize;
+  color: #ffffff;
+}
+
+.dialog__buttons > button:focus {
+  outline: 0 !important;
+}
+
+.dialog__buttons > button:hover {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+  background-color: #f8f8f8;
+  border: 1px solid #c6c6c6;
+  color: #222;
+}
+
+@media (max-width: 600px) {
+  .dialog {
+    width: 300px;
+  }
+
+  .dialog__buttons {
+    justify-content: space-evenly;
+  }
+}

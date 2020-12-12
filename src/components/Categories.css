@@ -1,0 +1,14 @@
+.single {
+  display: grid;
+  place-items: center;
+  margin-top: 90px;
+}
+
+.categories {
+  /* height: 100vh; */
+  background-color: rgb(221, 221, 221);
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  padding: 30px;
+}

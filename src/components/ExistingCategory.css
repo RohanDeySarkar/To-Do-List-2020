@@ -1,0 +1,41 @@
+.exCategory {
+  height: 200px;
+  width: 300px;
+  /* border: 2px solid rgb(0, 0, 0); */
+  border-radius: 10px;
+  background-color: #7e49ac;
+  cursor: pointer;
+  transition: 0.4s ease-in;
+  transform: scale(1);
+  margin: 10px;
+}
+
+.exCategory:hover {
+  transition: 0.4s ease-in-out;
+  transform: scale(1.05);
+}
+
+.exCategory__items {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.exCategory__itemsIcon {
+  color: #dcdcdc;
+  cursor: pointer;
+  font-weight: 300;
+  margin-bottom: -20px;
+}
+
+.exCategory__itemsIcon > .MuiSvgIcon-root {
+  font-size: 100px;
+  font-weight: 100;
+}
+
+.exCategory__items > p {
+  /* text-transform: capitalize; */
+  font-size: 20px;
+  font-weight: 700;
+  color: #dcdcdc;
+}

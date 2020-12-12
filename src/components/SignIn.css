@@ -1,0 +1,100 @@
+.container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background: #e2f3f5;
+}
+
+.login-card {
+  position: relative;
+  background: #e2f3f5;
+  border-radius: 40px;
+  height: 700px;
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.8rem;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.2rem;
+  box-shadow: 13px 13px 20px #c1d7db, -13px -13px 20px #ffffff;
+}
+
+.logo-div {
+  background-image: url("./images/reminder.png");
+  background-size: contain;
+  border-radius: 50%;
+  box-shadow: 0px 0px 2px #fdfdfd, 0px 0px 0px 5px #e2f3f5, 8px 8px 15px #c1c1c1,
+    -8px -8px 15px #ffffff;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 2rem;
+}
+
+.title,
+.subtitle {
+  color: #364f6b;
+}
+
+.login-svg {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.4rem;
+}
+
+.login-svg > svg {
+  width: 340px;
+  height: 300px;
+}
+
+#screen-elements {
+  animation: screen 0.9s ease-in-out 0s alternate infinite;
+}
+
+@keyframes screen {
+  from {
+    transform: translateY(-2%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+#left-arm {
+  animation: arm 0.9s ease-in-out 0s alternate infinite;
+}
+
+@keyframes arm {
+  from {
+    transform: translateY(-2%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+.login-btn {
+  position: absolute;
+  bottom: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: #e8f5f7;
+  outline: none;
+  border: none;
+  height: 50px;
+  width: 230px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  color: #364f6b;
+  box-shadow: 13px 13px 20px #c7cdce, -13px -13px 20px #ffffff;
+  transition: 0.3s ease-in-out;
+}
+
+.login-btn:hover {
+  cursor: pointer;
+  color: #fc5185;
+  transition: 0.3s ease-in-out;
+  box-shadow: 8px 8px 10px inset #c1d7db, -8px -8px 10px inset #ffffff;
+}

@@ -1,0 +1,124 @@
+.navbar {
+  background-color: #343a69;
+  /* background-image: linear-gradient(
+    to right,
+    rgb(137, 137, 137),
+    rgb(132, 132, 132)
+  ); */
+  top: 0;
+  position: sticky;
+  z-index: 999;
+}
+
+.navbar__items {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #dcdcdc;
+}
+
+.navbar__items > .MuiSvgIcon-root {
+  font-size: 30px;
+  transition: 200ms color ease-in;
+}
+
+.navbar__items > h1 {
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: 2px;
+}
+
+.navbar__itemsIcon:hover {
+  cursor: pointer;
+  color: rgb(255, 255, 255);
+}
+
+.navbar__drawer {
+  background-color: #7e49ac;
+  height: 100vh;
+}
+
+.navbar__drawerIcon {
+  color: rgb(220, 220, 220);
+  transition: 200ms color ease-in;
+  /* margin-bottom: -10px; */
+}
+
+.navbar__drawerIcon > .MuiSvgIcon-root {
+  font-size: 30px;
+}
+
+.navbar__user {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+}
+
+.navbar__user > p {
+  color: #ffffff;
+  font-weight: 850;
+  letter-spacing: 1.5px;
+}
+
+.navbar__links {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.navbar__links > a {
+  color: rgb(220, 220, 220);
+  transition: 200ms color ease-in;
+  text-decoration: inherit;
+  cursor: pointer;
+  padding: 5px;
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: 750;
+  letter-spacing: 2px;
+}
+
+.navbar__drawerIcon:hover,
+.navbar__links > a:hover {
+  color: rgb(255, 255, 255);
+  text-decoration: inherit;
+}
+
+.navbar__logout {
+  position: fixed;
+  bottom: 40px;
+  /* height: 100px; */
+  width: 170px;
+  text-align: center;
+}
+
+.navbar__logout > button {
+  padding: 10px;
+  width: 80%;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1px solid#7e49ac;
+  background-color: rgb(220, 220, 220);
+}
+
+.navbar__logout > button:focus {
+  outline: 0 !important;
+}
+
+.navbar__logout > button > h3 {
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: rgb(34, 34, 34);
+}
+
+.navbar__logout > button:hover {
+  background-color: white;
+  transition: 0.4s ease-in-out;
+}
+
+.navbar__logout > button:hover > h3 {
+  color: black;
+}

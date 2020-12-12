@@ -1,0 +1,139 @@
+.reminder__container {
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  /* width: 100%; */
+  background-color: rgb(221, 221, 221);
+}
+
+.reminder__container > h1 {
+  font-size: 45px;
+  font-weight: 750;
+}
+
+.reminder__add {
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  cursor: pointer;
+  height: 120px;
+  width: 30%;
+  /* background-color: blue; */
+}
+
+.reminder__addIcon {
+  color: rgb(88, 88, 88);
+  transition: 0.4s ease-in-out;
+  transform: scale(1);
+}
+
+.reminder__add > .MuiSvgIcon-root {
+  font-size: 80px;
+}
+
+.reminder__addText {
+  padding: 10px;
+  font-size: 20px;
+  font-weight: 800;
+  /* text-align: center; */
+  display: none;
+}
+
+.reminder__add:hover > .reminder__addIcon {
+  transition: 0.4s ease-in-out;
+  transform: scale(1.05);
+  color: black;
+}
+
+.reminder__add:hover > .reminder__addText {
+  display: inline;
+}
+
+.reminder__dialog {
+  max-width: 400px;
+  padding: 10px;
+}
+
+.reminder__dialogButtons {
+  padding: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.reminder__dialogButtons > button {
+  margin: 5px;
+  padding: 7px 15px;
+  cursor: pointer;
+  border: 1px solid rgb(165, 165, 165);
+  border-radius: 5%;
+  text-transform: capitalize;
+  color: #ffffff;
+}
+
+.reminder__dialogButtons > button:focus {
+  outline: 0 !important;
+}
+
+.reminder__dialogButtons > button:hover {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+  background-color: #f8f8f8;
+  border: 1px solid #c6c6c6;
+  color: #222;
+}
+
+.reminder__cards {
+  max-height: 360px;
+  width: 80%;
+  border-radius: 5px;
+  padding: 10px;
+  overflow-y: overlay;
+  background-color: #ec7eb3;
+  transition: background-color 1s linear;
+}
+
+.reminder__cards:hover {
+  background-color: #ff94c7;
+}
+
+.reminder__noCards {
+  background-color: rgb(221, 221, 221) !important;
+  height: 200px;
+}
+
+.reminder__buttons {
+  padding: 20px;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  /* background-color: red; */
+}
+
+.reminder__buttons > .MuiSvgIcon-root {
+  font-size: 40px;
+}
+
+.reminder__buttons--hover:hover {
+  color: rgb(32, 32, 32) !important;
+  transition: 0.4s ease-in-out;
+}
+
+@media (max-width: 700px) {
+  .reminder__add {
+    width: 60%;
+  }
+
+  .reminder__container > h1 {
+    font-size: 20px;
+  }
+
+  .reminder__dialog {
+    max-width: 300px;
+  }
+
+  .reminder__dialogButtons {
+    justify-content: space-evenly;
+  }
+}

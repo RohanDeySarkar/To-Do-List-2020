@@ -1,0 +1,31 @@
+.home-svg svg {
+	width: 420px;
+	height: 600px;
+	margin-left: 8rem;
+}
+
+#cards {
+	animation: screen 0.9s ease-in-out 0s alternate infinite;
+}
+
+@keyframes screen {
+	from {
+		transform: translateY(-2%);
+	}
+	to {
+		transform: translateY(0%);
+	}
+}
+
+#person {
+	animation: person 0.9s ease-in-out 0s alternate infinite;
+}
+
+@keyframes person {
+	from {
+		transform: translateY(-0.7%);
+	}
+	to {
+		transform: translateY(0%);
+	}
+}

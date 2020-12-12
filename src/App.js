@@ -1,23 +1,38 @@
-import logo from './logo.svg';
+import React from 'react';
+import {Switch, Route} from 'react-router-dom';
 import './App.css';
 
+import Navbar from './components/Navbar';
+import Home from './components/Home';
+import Categories from './components/Categories'
+import Reminder from './components/Reminder';
+import SignIn from './components/SignIn';
+
+import {useStateValue} from './components/StateProvider';
+
 function App() {
+
+  const [{activeCategory}, dispatch] = useStateValue();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Switch>
+        <Route exact path='/login'>
+					<SignIn />
+				</Route>
+        <Route exact path="/">
+          <Navbar title="Home" />
+          <Home />
+        </Route>
+        <Route exact path="/categories">
+          <Navbar title="Categories" />
+          <Categories />
+        </Route>
+        <Route exact path="/reminder">
+          <Navbar title={activeCategory?.length? "Reminders": "Reminders"} />
+          <Reminder />
+        </Route>
+      </Switch>
     </div>
   );
 }
