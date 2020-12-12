@@ -1,31 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import AddCategory from './AddCategory';
 import './Categories.css';
 import ExistingCategory from './ExistingCategory';
 
-import {useStateValue} from './StateProvider';
+import { useStateValue } from './StateProvider';
 
 function Categories() {
+	const history = useHistory();
 
-    const [{categories}, dispatch] = useStateValue();
+	useEffect(() => {
+		const token = localStorage.getItem('TOKEN');
+		if (token === null) {
+			history.push('/login');
+		}
+	}, []);
 
-    // console.log({categories});
+	const [{ categories }, dispatch] = useStateValue();
 
-    const categoriesLength = Object.keys(categories).length;
+	// console.log({categories});
 
-    // console.log("length", categoriesLength);
+	const categoriesLength = Object.keys(categories).length;
 
-    return (
-        <div 
-            className={`${categoriesLength === 0 && "single"} ${categoriesLength !== 0 && "categories"}`}
-        >
-            <AddCategory />
-            
-            {categories?.map((category) => 
-                <ExistingCategory name={category} />
-            )}
-        </div>
-    )
+	// console.log("length", categoriesLength);
+
+	return (
+		<div
+			className={`${categoriesLength === 0 && 'single'} ${
+				categoriesLength !== 0 && 'categories'
+			}`}
+		>
+			<AddCategory />
+
+			{categories?.map((category) => (
+				<ExistingCategory name={category} />
+			))}
+		</div>
+	);
 }
 
-export default Categories
+export default Categories;
