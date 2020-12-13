@@ -192,7 +192,11 @@ function Reminder() {
 
 		dispatch({
 			type: 'ACTIVE_CATEGORY',
-			payload: '',
+			payload: {
+				title: '',
+				cid: '',
+				uid: '',
+			},
 		});
 
 		// filterReminders();
@@ -202,9 +206,9 @@ function Reminder() {
 
 	return (
 		<div className='reminder'>
-			{activeCategory?.length > 0 ? (
+			{activeCategory.cid !== '' ? (
 				<div className='reminder__container'>
-					<h1>Your Reminders for {activeCategory}</h1>
+					<h1>Your Reminders for {activeCategory.title}</h1>
 
 					<div className='reminder__add' onClick={handleDialogOpen}>
 						<AddCircleIcon className='reminder__addIcon' />
@@ -362,11 +366,15 @@ function Reminder() {
 								<DialogTitle id='alert-dialog-title'>{`Delete category ${activeCategory} ?`}</DialogTitle>
 
 								<div
-									style={{ justifyContent: 'space-evenly' }}
+									style={{
+										justifyContent: 'space-evenly',
+									}}
 									className='reminder__dialogButtons'
 								>
 									<button
-										style={{ backgroundColor: '#fe5f55' }}
+										style={{
+											backgroundColor: '#fe5f55',
+										}}
 										onClick={() =>
 											setOpenDeleteDialog(false)
 										}
@@ -374,7 +382,9 @@ function Reminder() {
 										No
 									</button>
 									<button
-										style={{ backgroundColor: '#17b978' }}
+										style={{
+											backgroundColor: '#17b978',
+										}}
 										onClick={handleDeleteCategory}
 									>
 										Yes

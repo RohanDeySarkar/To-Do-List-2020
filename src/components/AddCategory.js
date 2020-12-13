@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Firebase } from '../Firebase';
 import './AddCategory.css';
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -9,6 +10,7 @@ import { useStateValue } from './StateProvider';
 import { DialogContent, DialogTitle, TextField } from '@material-ui/core';
 
 function AddCategory() {
+	const db = Firebase.firestore();
 	const [{ categories }, dispatch] = useStateValue();
 
 	const [open, setOpen] = useState(false);
@@ -33,15 +35,32 @@ function AddCategory() {
 		setError(false);
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
+		const user = Firebase.auth().currentUser;
 		e.preventDefault();
 
 		if (newCategory.length !== 0) {
 			if (categories.includes(newCategory) == false) {
-				dispatch({
-					type: 'CREATE_CATEGORY',
-					payload: newCategory,
-				});
+				const category = {
+					title: newCategory,
+					uid: user.uid,
+					reminders: [],
+				};
+				await db
+					.collection('categories')
+					.add(category)
+					.then((doc) => {
+						category.id = doc.id;
+					})
+					.then((_) => {
+						dispatch({
+							type: 'CREATE_CATEGORY',
+							payload: category,
+						});
+					})
+					.catch((err) => {
+						console.error(err);
+					});
 
 				setNewCategory('');
 				setOpen(false);

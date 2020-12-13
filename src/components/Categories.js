@@ -34,7 +34,12 @@ function Categories() {
 			<AddCategory />
 
 			{categories?.map((category) => (
-				<ExistingCategory name={category} />
+				<ExistingCategory
+					key={category.id}
+					name={category.title}
+					cid={category.id}
+					uid={category.uid}
+				/>
 			))}
 		</div>
 	);
