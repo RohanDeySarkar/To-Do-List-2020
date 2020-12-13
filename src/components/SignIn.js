@@ -7,12 +7,12 @@ import { Firebase } from '../Firebase';
 
 const SignIn = () => {
 	const db = Firebase.firestore();
-	
+
 	const history = useHistory();
 
 	const handleClick = async (e) => {
 		e.preventDefault();
-		
+
 		var provider = new Firebase.auth.GoogleAuthProvider();
 
 		Firebase.auth()
