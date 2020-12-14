@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Firebase } from '../Firebase';
 
 import AddCategory from './AddCategory';
 import './Categories.css';
@@ -9,15 +10,37 @@ import { useStateValue } from './StateProvider';
 
 function Categories() {
 	const history = useHistory();
+	const [{ categories }, dispatch] = useStateValue();
 
 	useEffect(() => {
+		const db = Firebase.firestore();
+
 		const token = localStorage.getItem('TOKEN');
 		if (token === null) {
 			history.push('/login');
 		}
-	}, []);
 
-	const [{ categories }, dispatch] = useStateValue();
+		const uid = localStorage.getItem('ID');
+		db.collection('categories')
+			.where('uid', '==', uid)
+			.get()
+			.then((data) => {
+				let categories = [];
+				data.docs.forEach((doc) => {
+					let category = {
+						title: doc.data()['title'],
+						uid: doc.data()['uid'],
+						cid: doc.id,
+						rmeinders: doc.data()['reminders'],
+					};
+					categories.push(category);
+				});
+				dispatch({
+					type: 'UPDATE_CATEGORIES',
+					payload: categories,
+				});
+			});
+	}, [dispatch, history]);
 
 	// console.log({categories});
 
@@ -33,9 +56,9 @@ function Categories() {
 		>
 			<AddCategory />
 
-			{categories?.map((category) => (
+			{categories?.map((category, index) => (
 				<ExistingCategory
-					key={category.id}
+					key={index}
 					name={category.title}
 					cid={category.id}
 					uid={category.uid}

@@ -2,18 +2,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './ReminderSvg.css';
 
-import {FaArrowRight} from "react-icons/fa";
+import { FaArrowRight } from 'react-icons/fa';
 
 const ReminderSvg = () => {
 	return (
 		<div className='reminder-svg'>
-			<div className="reminder-svg__title">
-				<Link to="/categories">
+			<div className='reminder-svg__title'>
+				<Link to='/categories'>
 					<h1>Select a Category To View Reminders</h1>
 				</Link>
-				
-				<Link to="/categories">
-					<FaArrowRight size={30} className="reminder-svg__rightIcon" />
+
+				<Link to='/categories'>
+					<FaArrowRight
+						size={30}
+						className='reminder-svg__rightIcon'
+					/>
 				</Link>
 			</div>
 
@@ -25,7 +28,7 @@ const ReminderSvg = () => {
 					fill='none'
 					xmlns='http://www.w3.org/2000/svg'
 				>
-					<g id='reminder-svg 1' clip-path='url(#clip0)'>
+					<g id='reminder-svg 1' clipPath='url(#clip0)'>
 						<g id='person1'>
 							<path
 								id='Vector'
@@ -204,7 +207,11 @@ const ReminderSvg = () => {
 					</g>
 					<defs>
 						<clipPath id='clip0'>
-							<rect width='574.171' height='411.085' fill='white' />
+							<rect
+								width='574.171'
+								height='411.085'
+								fill='white'
+							/>
 						</clipPath>
 					</defs>
 				</svg>

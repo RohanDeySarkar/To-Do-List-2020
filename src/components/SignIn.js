@@ -30,7 +30,6 @@ const SignIn = () => {
 					userName: user.displayName,
 					imageUrl: user.photoURL,
 					email: user.email,
-					categories: [],
 				};
 
 				db.doc(`/users/${user.uid}`)

@@ -36,7 +36,7 @@ function Reminder() {
 		if (token === null) {
 			history.push('/login');
 		}
-	}, []);
+	}, [history]);
 
 	const classes = useStyles();
 
@@ -70,7 +70,7 @@ function Reminder() {
 	useEffect(() => {
 		setTitle(editTitle);
 		setDescription(editText);
-	}, [editId]);
+	}, [editId, editText, editTitle]);
 
 	// console.log(activeReminders);
 
@@ -137,7 +137,7 @@ function Reminder() {
 
 			if (editId !== 0) {
 				var updatedReminders = reminders.filter(function (reminder) {
-					return reminder.id != editId;
+					return reminder.id !== editId;
 				});
 
 				dispatch({

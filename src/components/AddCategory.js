@@ -40,7 +40,7 @@ function AddCategory() {
 		e.preventDefault();
 
 		if (newCategory.length !== 0) {
-			if (categories.includes(newCategory) == false) {
+			if (categories.includes(newCategory) === false) {
 				const category = {
 					title: newCategory,
 					uid: user.uid,

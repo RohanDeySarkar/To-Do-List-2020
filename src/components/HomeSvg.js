@@ -4,14 +4,15 @@ import './HomeSvg.css';
 const HomeSvg = () => {
 	return (
 		<div className='home-svg'>
+			<h1>All Caught Up!</h1>
 			<svg
-				width='610'
-				height='728'
+				width='420'
+				height='520'
 				viewBox='0 0 610 728'
 				fill='none'
 				xmlns='http://www.w3.org/2000/svg'
 			>
-				<g id='home-svg 1' clip-path='url(#clip0)'>
+				<g id='home-svg 1' clipPath='url(#clip0)'>
 					<g id='phone'>
 						<path
 							id='Vector'
