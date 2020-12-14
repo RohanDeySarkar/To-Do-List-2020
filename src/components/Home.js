@@ -11,11 +11,10 @@ function Home() {
 		if (token === null) {
 			history.push('/login');
 		}
-	}, []);
+	}, [history]);
 
 	return (
 		<div className='home'>
-			<h1>All Caught Up!</h1>
 			<div className='home-svg'>
 				<HomeSvg />
 			</div>

@@ -1,6 +1,12 @@
+.home-svg {
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
 .home-svg svg {
-	width: 420px;
-	height: 600px;
 	margin-left: 8rem;
 }
 
