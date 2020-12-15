@@ -142,22 +142,6 @@ function Reminder() {
 			date: date,
 		};
 
-		await db
-			.doc(`/categories/${cid}`)
-			.get()
-			.then((doc) => {
-				var reminders = doc.data()['reminders'];
-				reminders.push(reminderData);
-				db.doc(`/categories/${cid}`)
-					.update({ reminders: reminders })
-					.then((_) => {
-						console.log('Document Updated Successfully');
-					});
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-
 		// console.log("Add Reminder >>>", tempState);
 
 		if (title.length === 0 || date.length === 0 || time.length === 0) {
@@ -171,6 +155,10 @@ function Reminder() {
 					return reminder.id !== editId;
 				});
 
+				await db
+					.doc(`/categories/${cid}`)
+					.update({ reminders: updatedReminders });
+
 				dispatch({
 					type: 'UPDATE_REMINDERS',
 					payload: updatedReminders,
@@ -181,6 +169,17 @@ function Reminder() {
 					payload: { id: 0, title: '', text: '' },
 				});
 			}
+
+			await db
+				.doc(`/categories/${cid}`)
+				.get()
+				.then((doc) => {
+					var reminders = doc.data()['reminders'];
+					reminders.push(reminderData);
+					db.doc(`/categories/${cid}`).update({
+						reminders: reminders,
+					});
+				});
 
 			dispatch({
 				type: 'ADD_REMINDER',
@@ -207,54 +206,54 @@ function Reminder() {
 				if (doc.exists) {
 					const uid = doc.data()['uid'];
 					if (uid !== user) {
-						console.error('Not Authorized');
 						return;
 					} else {
 						db.doc(`/categories/${cid}`)
 							.delete()
 							.then((_) => {
-								console.log('Document Deleted Successfully');
+								var updatedReminders = reminders.filter(
+									function (reminder) {
+										return (
+											reminder.category !==
+											activeCategory.cid
+										);
+									}
+								);
+
+								var updatedCategories = categories.filter(
+									function (category) {
+										return category !== activeCategory;
+									}
+								);
+
+								dispatch({
+									type: 'UPDATE_REMINDERS',
+									payload: updatedReminders,
+								});
+
+								dispatch({
+									type: 'UPDATE_CATEGORIES',
+									payload: updatedCategories,
+								});
+
+								dispatch({
+									type: 'ACTIVE_CATEGORY',
+									payload: {
+										title: '',
+										cid: '',
+										uid: '',
+									},
+								});
+
+								localStorage.removeItem('ACTIVE_CATEGORY_ID');
+								setOpenDeleteDialog(false);
+								history.push('/categories');
 							});
 					}
 				} else {
-					console.error('Document does not exist');
 					return;
 				}
 			});
-		var updatedReminders = reminders.filter(function (reminder) {
-			return reminder.category !== activeCategory.cid;
-		});
-
-		var updatedCategories = categories.filter(function (category) {
-			return category !== activeCategory;
-		});
-
-		// console.log(updatedCategories);
-		// console.log(updatedReminders);
-
-		dispatch({
-			type: 'UPDATE_REMINDERS',
-			payload: updatedReminders,
-		});
-
-		dispatch({
-			type: 'UPDATE_CATEGORIES',
-			payload: updatedCategories,
-		});
-
-		dispatch({
-			type: 'ACTIVE_CATEGORY',
-			payload: {
-				title: '',
-				cid: '',
-				uid: '',
-			},
-		});
-
-		// filterReminders();
-		localStorage.removeItem('ACTIVE_CATEGORY_ID');
-		setOpenDeleteDialog(false);
-		history.push('/categories');
 	};
 
 	return (

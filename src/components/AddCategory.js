@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Firebase } from '../Firebase';
+import Spinner from 'react-bootstrap/Spinner';
 import './AddCategory.css';
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -17,9 +18,7 @@ function AddCategory() {
 	const [error, setError] = useState(false);
 	const [errorName, setErrorName] = useState('category name cannot be empty');
 	const [newCategory, setNewCategory] = useState('');
-
-	// console.log(categories);
-	// console.log(newCategory);
+	const [loading, setLoading] = useState(false);
 
 	const handleOpen = () => {
 		setOpen(true);
@@ -36,11 +35,15 @@ function AddCategory() {
 	};
 
 	const handleSubmit = async (e) => {
+		setLoading(true);
 		const user = Firebase.auth().currentUser;
 		e.preventDefault();
 
+		const catPresent = categories.find((category) => {
+			return category.title === newCategory;
+		});
 		if (newCategory.length !== 0) {
-			if (categories.includes(newCategory) === false) {
+			if (!catPresent) {
 				const category = {
 					title: newCategory,
 					uid: user.uid,
@@ -57,12 +60,10 @@ function AddCategory() {
 							type: 'CREATE_CATEGORY',
 							payload: category,
 						});
-					})
-					.catch((err) => {
-						console.error(err);
 					});
 
 				setNewCategory('');
+				setLoading(false);
 				setOpen(false);
 			} else {
 				setError(true);
@@ -106,22 +107,33 @@ function AddCategory() {
 									onChange={handleChange}
 								/>
 
-								<div className='dialog__buttons'>
-									<button
-										style={{ backgroundColor: '#fe5f55' }}
-										type='button'
-										onClick={handleClose}
-									>
-										close
-									</button>
-									<button
-										style={{ backgroundColor: '#17b978' }}
-										type='submit'
-										onClick={handleSubmit}
-									>
-										create
-									</button>
-								</div>
+								{loading ? (
+									<Spinner
+										animation='border'
+										variant='success'
+									/>
+								) : (
+									<div className='dialog__buttons'>
+										<button
+											style={{
+												backgroundColor: '#fe5f55',
+											}}
+											type='button'
+											onClick={handleClose}
+										>
+											close
+										</button>
+										<button
+											style={{
+												backgroundColor: '#17b978',
+											}}
+											type='submit'
+											onClick={handleSubmit}
+										>
+											create
+										</button>
+									</div>
+								)}
 							</form>
 						</DialogContent>
 					</div>

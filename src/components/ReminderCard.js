@@ -16,7 +16,11 @@ function ReminderCard({ id, title, text, time, date, openDialog, cid }) {
 	const handleEdit = () => {
 		dispatch({
 			type: 'EDIT_REMINDER',
-			payload: { id: id, title: title, text: text },
+			payload: {
+				id: id,
+				title: title,
+				text: text,
+			},
 		});
 
 		openDialog();
