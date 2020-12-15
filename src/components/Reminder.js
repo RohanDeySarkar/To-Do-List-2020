@@ -339,7 +339,7 @@ function Reminder() {
 										id='datetime-local'
 										label='Set Date and Time'
 										type='datetime-local'
-										// defaultValue="2017-05-24T10:30"
+										// defaultValue='2020-01-01T00:00'
 										className={classes.textField}
 										InputLabelProps={{
 											shrink: true,
@@ -385,6 +385,7 @@ function Reminder() {
 								text={reminder.text}
 								time={reminder.time}
 								date={reminder.date}
+								cid={reminder.category}
 								openDialog={handleDialogOpen}
 								// pass delete
 							/>

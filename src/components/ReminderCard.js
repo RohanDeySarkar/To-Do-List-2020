@@ -1,5 +1,6 @@
 import React from 'react';
 import './ReminderCard.css';
+import { Firebase } from '../Firebase';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -8,7 +9,8 @@ import { Tooltip } from '@material-ui/core';
 
 import { useStateValue } from './StateProvider';
 
-function ReminderCard({ id, title, text, time, date, openDialog }) {
+function ReminderCard({ id, title, text, time, date, openDialog, cid }) {
+	const db = Firebase.firestore();
 	const [{ reminders }, dispatch] = useStateValue();
 
 	const handleEdit = () => {
@@ -25,10 +27,15 @@ function ReminderCard({ id, title, text, time, date, openDialog }) {
 			return reminder.id !== id;
 		});
 
-		dispatch({
-			type: 'UPDATE_REMINDERS',
-			payload: updatedReminders,
-		});
+		db.doc(`/categories/${cid}`)
+			.update({ reminders: updatedReminders })
+			.then((_) => {
+				console.log('Document Updated Successfully');
+				dispatch({
+					type: 'UPDATE_REMINDERS',
+					payload: updatedReminders,
+				});
+			});
 	};
 
 	return (

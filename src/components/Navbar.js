@@ -59,10 +59,7 @@ function Navbar({ title }) {
 		await Firebase.auth()
 			.signOut()
 			.then((_) => {
-				localStorage.removeItem('ID');
-				localStorage.removeItem('DISPLAY_NAME');
-				localStorage.removeItem('PHOTO_URL');
-				localStorage.removeItem('TOKEN');
+				localStorage.clear();
 
 				history.push('/login');
 			})
