@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Reminder.css';
+import { Firebase } from '../Firebase';
 
 import { useStateValue } from './StateProvider';
 
@@ -30,14 +31,9 @@ const useStyles = makeStyles((theme) => ({
 
 function Reminder() {
 	const history = useHistory();
-
-	useEffect(() => {
-		const token = localStorage.getItem('TOKEN');
-		if (token === null) {
-			history.push('/login');
-		}
-	}, [history]);
-
+	const user = localStorage.getItem('ID');
+	const cid = localStorage.getItem('ACTIVE_CATEGORY_ID');
+	const db = Firebase.firestore();
 	const classes = useStyles();
 
 	const [
@@ -55,13 +51,33 @@ function Reminder() {
 
 	const filterReminders = () => {
 		var items = reminders.filter(function (reminder) {
-			return reminder.category === activeCategory;
+			return reminder.category === activeCategory.cid;
 		});
 
 		// console.log(items);
 
 		setActiveReminders(items);
 	};
+
+	useEffect(() => {
+		const token = localStorage.getItem('TOKEN');
+		if (token === null) {
+			history.push('/login');
+		}
+
+		db.doc(`/categories/${cid}`)
+			.get()
+			.then((doc) => {
+				const reminders = doc.data()['reminders'];
+				dispatch({
+					type: 'UPDATE_REMINDERS',
+					payload: reminders,
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	}, [dispatch, history, db, cid]);
 
 	useEffect(() => {
 		filterReminders();
@@ -109,23 +125,38 @@ function Reminder() {
 
 	// console.log(Math.floor(Math.random() * 10000) + Math.floor(Math.random() * 1000));
 
-	const handleReminderSubmit = (e) => {
+	const handleReminderSubmit = async (e) => {
 		e.preventDefault();
-
 		// Also use this for edit -> delete current card then add a new card
 
 		var randomId =
 			Math.floor(Math.random() * 10000) +
 			Math.floor(Math.random() * 1000);
 
-		var tempState = {
-			category: activeCategory,
-			id: randomId,
+		var reminderData = {
+			category: cid,
 			title: title,
+			id: randomId,
 			text: description,
 			time: time,
 			date: date,
 		};
+
+		await db
+			.doc(`/categories/${cid}`)
+			.get()
+			.then((doc) => {
+				var reminders = doc.data()['reminders'];
+				reminders.push(reminderData);
+				db.doc(`/categories/${cid}`)
+					.update({ reminders: reminders })
+					.then((_) => {
+						console.log('Document Updated Successfully');
+					});
+			})
+			.catch((err) => {
+				console.error(err);
+			});
 
 		// console.log("Add Reminder >>>", tempState);
 
@@ -153,7 +184,7 @@ function Reminder() {
 
 			dispatch({
 				type: 'ADD_REMINDER',
-				payload: tempState,
+				payload: reminderData,
 			});
 
 			setTitle('');
@@ -168,9 +199,30 @@ function Reminder() {
 
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-	const handleDeleteCategory = () => {
+	const handleDeleteCategory = async () => {
+		await db
+			.doc(`/categories/${cid}`)
+			.get()
+			.then((doc) => {
+				if (doc.exists) {
+					const uid = doc.data()['uid'];
+					if (uid !== user) {
+						console.error('Not Authorized');
+						return;
+					} else {
+						db.doc(`/categories/${cid}`)
+							.delete()
+							.then((_) => {
+								console.log('Document Deleted Successfully');
+							});
+					}
+				} else {
+					console.error('Document does not exist');
+					return;
+				}
+			});
 		var updatedReminders = reminders.filter(function (reminder) {
-			return reminder.category !== activeCategory;
+			return reminder.category !== activeCategory.cid;
 		});
 
 		var updatedCategories = categories.filter(function (category) {
@@ -200,6 +252,7 @@ function Reminder() {
 		});
 
 		// filterReminders();
+		localStorage.removeItem('ACTIVE_CATEGORY_ID');
 		setOpenDeleteDialog(false);
 		history.push('/categories');
 	};
@@ -324,8 +377,9 @@ function Reminder() {
 							activeReminders?.length === 0 && 'reminder__noCards'
 						} ${'reminder__cards'}`}
 					>
-						{activeReminders?.map((reminder) => (
+						{activeReminders?.map((reminder, index) => (
 							<ReminderCard
+								key={index}
 								id={reminder.id}
 								title={reminder.title}
 								text={reminder.text}
@@ -342,7 +396,12 @@ function Reminder() {
 							<KeyboardReturnIcon
 								style={{ color: '#3a3d44' }}
 								className='reminder__buttons--hover'
-								onClick={() => history.push('/categories')}
+								onClick={() => {
+									localStorage.removeItem(
+										'ACTIVE_CATEGORY_ID'
+									);
+									history.push('/categories');
+								}}
 							/>
 						</Tooltip>
 						<Tooltip
@@ -363,7 +422,7 @@ function Reminder() {
 							aria-describedby='alert-dialog-description'
 						>
 							<div className='reminder__dialog'>
-								<DialogTitle id='alert-dialog-title'>{`Delete category ${activeCategory} ?`}</DialogTitle>
+								<DialogTitle id='alert-dialog-title'>{`Delete category ${activeCategory.title} ?`}</DialogTitle>
 
 								<div
 									style={{
