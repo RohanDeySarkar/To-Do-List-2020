@@ -60,7 +60,7 @@ function Categories() {
 				<ExistingCategory
 					key={index}
 					name={category.title}
-					cid={category.id}
+					cid={category.cid}
 					uid={category.uid}
 				/>
 			))}
