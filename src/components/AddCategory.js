@@ -53,7 +53,7 @@ function AddCategory() {
 					.collection('categories')
 					.add(category)
 					.then((doc) => {
-						category.id = doc.id;
+						category.cid = doc.id;
 					})
 					.then((_) => {
 						dispatch({

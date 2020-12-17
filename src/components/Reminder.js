@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 function Reminder() {
 	const history = useHistory();
 	const user = localStorage.getItem('ID');
-	const cid = localStorage.getItem('ACTIVE_CATEGORY_ID');
 	const db = Firebase.firestore();
 	const classes = useStyles();
 
@@ -65,19 +64,18 @@ function Reminder() {
 			history.push('/login');
 		}
 
-		db.doc(`/categories/${cid}`)
-			.get()
-			.then((doc) => {
-				const reminders = doc.data()['reminders'];
-				dispatch({
-					type: 'UPDATE_REMINDERS',
-					payload: reminders,
+		if (activeCategory.cid !== '' && activeCategory !== undefined) {
+			db.doc(`/categories/${activeCategory.cid}`)
+				.get()
+				.then((doc) => {
+					const reminders = doc.data()['reminders'];
+					dispatch({
+						type: 'UPDATE_REMINDERS',
+						payload: reminders,
+					});
 				});
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	}, [dispatch, history, db, cid]);
+		}
+	}, [dispatch, history, activeCategory]);
 
 	useEffect(() => {
 		filterReminders();
@@ -134,7 +132,7 @@ function Reminder() {
 			Math.floor(Math.random() * 1000);
 
 		var reminderData = {
-			category: cid,
+			category: activeCategory.cid,
 			title: title,
 			id: randomId,
 			text: description,
@@ -156,7 +154,7 @@ function Reminder() {
 				});
 
 				await db
-					.doc(`/categories/${cid}`)
+					.doc(`/categories/${activeCategory.cid}`)
 					.update({ reminders: updatedReminders });
 
 				dispatch({
@@ -171,12 +169,12 @@ function Reminder() {
 			}
 
 			await db
-				.doc(`/categories/${cid}`)
+				.doc(`/categories/${activeCategory.cid}`)
 				.get()
 				.then((doc) => {
 					var reminders = doc.data()['reminders'];
 					reminders.push(reminderData);
-					db.doc(`/categories/${cid}`).update({
+					db.doc(`/categories/${activeCategory.cid}`).update({
 						reminders: reminders,
 					});
 				});
@@ -198,9 +196,8 @@ function Reminder() {
 
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-	const handleDeleteCategory = async () => {
-		await db
-			.doc(`/categories/${cid}`)
+	const handleDeleteCategory = () => {
+		db.doc(`/categories/${activeCategory.cid}`)
 			.get()
 			.then((doc) => {
 				if (doc.exists) {
@@ -208,7 +205,7 @@ function Reminder() {
 					if (uid !== user) {
 						return;
 					} else {
-						db.doc(`/categories/${cid}`)
+						db.doc(`/categories/${activeCategory.cid}`)
 							.delete()
 							.then((_) => {
 								var updatedReminders = reminders.filter(
