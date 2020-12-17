@@ -47,7 +47,6 @@ function AddCategory() {
 				const category = {
 					title: newCategory,
 					uid: user.uid,
-					reminders: [],
 				};
 				await db
 					.collection('categories')

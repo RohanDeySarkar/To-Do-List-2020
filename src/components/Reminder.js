@@ -49,13 +49,13 @@ function Reminder() {
 	const [error, setError] = useState(false);
 
 	const filterReminders = () => {
-		var items = reminders.filter(function (reminder) {
-			return reminder.category === activeCategory.cid;
-		});
+		if (reminders !== undefined) {
+			var items = reminders.filter(function (reminder) {
+				return reminder.cid === activeCategory.cid;
+			});
 
-		// console.log(items);
-
-		setActiveReminders(items);
+			setActiveReminders(items);
+		}
 	};
 
 	useEffect(() => {
@@ -64,18 +64,30 @@ function Reminder() {
 			history.push('/login');
 		}
 
-		if (activeCategory.cid !== '' && activeCategory !== undefined) {
-			db.doc(`/categories/${activeCategory.cid}`)
-				.get()
-				.then((doc) => {
-					const reminders = doc.data()['reminders'];
-					dispatch({
-						type: 'UPDATE_REMINDERS',
-						payload: reminders,
-					});
+		db.collection('reminders')
+			.where('cid', '==', activeCategory.cid)
+			.get()
+			.then((data) => {
+				let newReminders = [];
+				data.docs.forEach((doc) => {
+					let reminder = {
+						title: doc.data()['title'],
+						cid: doc.data()['cid'],
+						id: doc.id,
+						text: doc.data()['text'],
+						date: doc.data()['date'],
+						time: doc.data()['time'],
+						uid: doc.data()['uid'],
+						category: doc.data()['category'],
+					};
+					newReminders.push(reminder);
 				});
-		}
-	}, [dispatch, history, activeCategory]);
+				dispatch({
+					type: 'UPDATE_REMINDERS',
+					payload: newReminders,
+				});
+			});
+	}, [dispatch, history, activeCategory, db]);
 
 	useEffect(() => {
 		filterReminders();
@@ -127,17 +139,14 @@ function Reminder() {
 		e.preventDefault();
 		// Also use this for edit -> delete current card then add a new card
 
-		var randomId =
-			Math.floor(Math.random() * 10000) +
-			Math.floor(Math.random() * 1000);
-
 		var reminderData = {
-			category: activeCategory.cid,
+			cid: activeCategory.cid,
 			title: title,
-			id: randomId,
 			text: description,
 			time: time,
 			date: date,
+			uid: user,
+			category: activeCategory.title,
 		};
 
 		// console.log("Add Reminder >>>", tempState);
@@ -153,9 +162,7 @@ function Reminder() {
 					return reminder.id !== editId;
 				});
 
-				await db
-					.doc(`/categories/${activeCategory.cid}`)
-					.update({ reminders: updatedReminders });
+				await db.doc(`/reminders/${editId}`).delete();
 
 				dispatch({
 					type: 'UPDATE_REMINDERS',
@@ -169,14 +176,10 @@ function Reminder() {
 			}
 
 			await db
-				.doc(`/categories/${activeCategory.cid}`)
-				.get()
+				.collection('reminders')
+				.add(reminderData)
 				.then((doc) => {
-					var reminders = doc.data()['reminders'];
-					reminders.push(reminderData);
-					db.doc(`/categories/${activeCategory.cid}`).update({
-						reminders: reminders,
-					});
+					reminderData.id = doc.id;
 				});
 
 			dispatch({
@@ -208,11 +211,22 @@ function Reminder() {
 						db.doc(`/categories/${activeCategory.cid}`)
 							.delete()
 							.then((_) => {
+								db.collection('reminders')
+									.where('cid', '==', activeCategory.cid)
+									.get()
+									.then((data) => {
+										var batch = db.batch();
+
+										data.forEach((doc) => {
+											batch.delete(doc.ref);
+										});
+
+										batch.commit();
+									});
 								var updatedReminders = reminders.filter(
 									function (reminder) {
 										return (
-											reminder.category !==
-											activeCategory.cid
+											reminder.cid !== activeCategory.cid
 										);
 									}
 								);
