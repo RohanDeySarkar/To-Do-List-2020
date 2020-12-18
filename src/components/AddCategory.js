@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Firebase } from '../Firebase';
-import Spinner from 'react-bootstrap/Spinner';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import './AddCategory.css';
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -107,10 +107,7 @@ function AddCategory() {
 								/>
 
 								{loading ? (
-									<Spinner
-										animation='border'
-										variant='success'
-									/>
+									<CircularProgress color='secondary' />
 								) : (
 									<div className='dialog__buttons'>
 										<button

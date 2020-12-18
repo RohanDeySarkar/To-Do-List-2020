@@ -2,24 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Firebase } from '../Firebase';
 import Card from './Card';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './Home.css';
 import HomeSvg from './HomeSvg';
 
 function Home() {
 	const history = useHistory();
+	const [isLoading, setIsLoading] = useState(false);
 	const [reminders, setReminders] = useState([{}]);
 	const db = Firebase.firestore();
 	const user = localStorage.getItem('ID');
 
-	useEffect(() => {
-		const token = localStorage.getItem('TOKEN');
-		if (token === null) {
-			history.push('/login');
-		}
+	const fetchData = async () => {
+		setIsLoading(true);
+		const today = new Date();
+		const year = today.getFullYear();
+		const month = today.getMonth() + 1;
+		const date = today.getDate();
 
-		db.collection('reminders')
+		const reminderDate = year + '-' + month + '-' + date;
+
+		await db
+			.collection('reminders')
 			.where('uid', '==', user)
+			.where('date', '==', reminderDate)
 			.get()
 			.then((data) => {
 				let reminderData = [];
@@ -37,8 +44,39 @@ function Home() {
 					reminderData.push(reminder);
 				});
 				setReminders(reminderData);
+				setIsLoading(false);
 			});
-	}, [history, db, user]);
+	};
+
+	useEffect(() => {
+		const token = localStorage.getItem('TOKEN');
+		if (token === null) {
+			history.push('/login');
+		}
+		fetchData();
+	}, [history]);
+
+	const markComplete = async (id) => {
+		setIsLoading(true);
+		await db
+			.doc(`/reminders/${id.id}`)
+			.delete()
+			.then((_) => {
+				fetchData();
+				setIsLoading(false);
+			});
+	};
+
+	const snooze = async (data) => {
+		setIsLoading(true);
+		await db
+			.doc(`/reminders/${data.id}`)
+			.update({ date: data.updatedDate })
+			.then((_) => {
+				fetchData();
+				setIsLoading(false);
+			});
+	};
 
 	return (
 		<div className='home'>
@@ -47,19 +85,27 @@ function Home() {
 					<HomeSvg />
 				</div>
 			) : (
-				<div className='home-card'>
-					{reminders.map((reminder, index) => (
-						<Card
-							key={index}
-							title={reminder.title}
-							cid={reminder.cid}
-							text={reminder.text}
-							id={reminder.id}
-							date={reminder.date}
-							category={reminder.category}
-						/>
-					))}
-				</div>
+				<>
+					{isLoading ? (
+						<CircularProgress color='secondary' />
+					) : (
+						<div className='home-card'>
+							{reminders.map((reminder, index) => (
+								<Card
+									key={index}
+									title={reminder.title}
+									cid={reminder.cid}
+									text={reminder.text}
+									id={reminder.id}
+									date={reminder.date}
+									category={reminder.category}
+									onMarkComplete={markComplete}
+									onSnooze={snooze}
+								/>
+							))}
+						</div>
+					)}
+				</>
 			)}
 		</div>
 	);
