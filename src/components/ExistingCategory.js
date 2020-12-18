@@ -19,7 +19,6 @@ function ExistingCategory({ name, cid, uid }) {
 
 	const handleClick = () => {
 		localStorage.setItem('ACTIVE_CATEGORY_ID', cid);
-
 		dispatch({
 			type: 'ACTIVE_CATEGORY',
 			payload: category,

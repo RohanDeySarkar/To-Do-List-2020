@@ -4,6 +4,7 @@ import './SignIn.css';
 import { FaGoogle } from 'react-icons/fa';
 
 import { Firebase } from '../Firebase';
+import { Encrypt } from './encrypt';
 
 const SignIn = () => {
 	const db = Firebase.firestore();
@@ -20,8 +21,8 @@ const SignIn = () => {
 			.then((result) => {
 				var user = result.user;
 				var token = result.credential.accessToken;
-
-				localStorage.setItem('TOKEN', token);
+				var _token = JSON.stringify(Encrypt(token));
+				localStorage.setItem('TOKEN', JSON.stringify(_token));
 				localStorage.setItem('ID', user.uid);
 				localStorage.setItem('DISPLAY_NAME', user.displayName);
 				localStorage.setItem('PHOTO_URL', user.photoURL);
@@ -36,11 +37,9 @@ const SignIn = () => {
 					.get()
 					.then((doc) => {
 						if (doc.exists) {
-							console.log('User Already Registered');
 							history.push('/');
 						} else {
 							db.doc(`/users/${user.uid}`).set(userData);
-							console.log('User Registered Successfully');
 							history.push('/');
 						}
 					})

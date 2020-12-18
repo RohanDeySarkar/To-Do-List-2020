@@ -31,7 +31,6 @@ function Categories() {
 						title: doc.data()['title'],
 						uid: doc.data()['uid'],
 						cid: doc.id,
-						rmeinders: doc.data()['reminders'],
 					};
 					categories.push(category);
 				});

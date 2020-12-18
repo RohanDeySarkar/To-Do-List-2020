@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 function Reminder() {
 	const history = useHistory();
 	const user = localStorage.getItem('ID');
-	const cid = localStorage.getItem('ACTIVE_CATEGORY_ID');
 	const db = Firebase.firestore();
 	const classes = useStyles();
 
@@ -50,13 +49,13 @@ function Reminder() {
 	const [error, setError] = useState(false);
 
 	const filterReminders = () => {
-		var items = reminders.filter(function (reminder) {
-			return reminder.category === activeCategory.cid;
-		});
+		if (reminders !== undefined) {
+			var items = reminders.filter(function (reminder) {
+				return reminder.cid === activeCategory.cid;
+			});
 
-		// console.log(items);
-
-		setActiveReminders(items);
+			setActiveReminders(items);
+		}
 	};
 
 	useEffect(() => {
@@ -65,19 +64,30 @@ function Reminder() {
 			history.push('/login');
 		}
 
-		db.doc(`/categories/${cid}`)
+		db.collection('reminders')
+			.where('cid', '==', activeCategory.cid)
 			.get()
-			.then((doc) => {
-				const reminders = doc.data()['reminders'];
+			.then((data) => {
+				let newReminders = [];
+				data.docs.forEach((doc) => {
+					let reminder = {
+						title: doc.data()['title'],
+						cid: doc.data()['cid'],
+						id: doc.id,
+						text: doc.data()['text'],
+						date: doc.data()['date'],
+						time: doc.data()['time'],
+						uid: doc.data()['uid'],
+						category: doc.data()['category'],
+					};
+					newReminders.push(reminder);
+				});
 				dispatch({
 					type: 'UPDATE_REMINDERS',
-					payload: reminders,
+					payload: newReminders,
 				});
-			})
-			.catch((err) => {
-				console.error(err);
 			});
-	}, [dispatch, history, db, cid]);
+	}, [dispatch, history, activeCategory, db]);
 
 	useEffect(() => {
 		filterReminders();
@@ -129,17 +139,14 @@ function Reminder() {
 		e.preventDefault();
 		// Also use this for edit -> delete current card then add a new card
 
-		var randomId =
-			Math.floor(Math.random() * 10000) +
-			Math.floor(Math.random() * 1000);
-
 		var reminderData = {
-			category: cid,
+			cid: activeCategory.cid,
 			title: title,
-			id: randomId,
 			text: description,
 			time: time,
 			date: date,
+			uid: user,
+			category: activeCategory.title,
 		};
 
 		// console.log("Add Reminder >>>", tempState);
@@ -155,9 +162,7 @@ function Reminder() {
 					return reminder.id !== editId;
 				});
 
-				await db
-					.doc(`/categories/${cid}`)
-					.update({ reminders: updatedReminders });
+				await db.doc(`/reminders/${editId}`).delete();
 
 				dispatch({
 					type: 'UPDATE_REMINDERS',
@@ -171,14 +176,10 @@ function Reminder() {
 			}
 
 			await db
-				.doc(`/categories/${cid}`)
-				.get()
+				.collection('reminders')
+				.add(reminderData)
 				.then((doc) => {
-					var reminders = doc.data()['reminders'];
-					reminders.push(reminderData);
-					db.doc(`/categories/${cid}`).update({
-						reminders: reminders,
-					});
+					reminderData.id = doc.id;
 				});
 
 			dispatch({
@@ -198,9 +199,8 @@ function Reminder() {
 
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-	const handleDeleteCategory = async () => {
-		await db
-			.doc(`/categories/${cid}`)
+	const handleDeleteCategory = () => {
+		db.doc(`/categories/${activeCategory.cid}`)
 			.get()
 			.then((doc) => {
 				if (doc.exists) {
@@ -208,14 +208,25 @@ function Reminder() {
 					if (uid !== user) {
 						return;
 					} else {
-						db.doc(`/categories/${cid}`)
+						db.doc(`/categories/${activeCategory.cid}`)
 							.delete()
 							.then((_) => {
+								db.collection('reminders')
+									.where('cid', '==', activeCategory.cid)
+									.get()
+									.then((data) => {
+										var batch = db.batch();
+
+										data.forEach((doc) => {
+											batch.delete(doc.ref);
+										});
+
+										batch.commit();
+									});
 								var updatedReminders = reminders.filter(
 									function (reminder) {
 										return (
-											reminder.category !==
-											activeCategory.cid
+											reminder.cid !== activeCategory.cid
 										);
 									}
 								);

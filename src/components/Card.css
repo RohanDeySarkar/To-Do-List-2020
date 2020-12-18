@@ -1,0 +1,55 @@
+.card-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	max-width: 1000px;
+	padding: 10px;
+}
+
+.reminder-card {
+	width: 90%;
+	height: 150px;
+	padding: 20px;
+	border-radius: 10px;
+	background-color: white;
+	font-family: 'Montserrat', sans-serif;
+}
+
+.c-title {
+	text-align: center;
+}
+
+.reminder-details {
+	height: 100px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.details {
+	font-size: 1.3rem;
+	display: flex;
+	justify-content: space-evenly;
+	flex-direction: column;
+}
+
+.details p {
+	color: #3c3c3c;
+	font-size: 1.1rem;
+}
+
+.actions {
+	width: 180px;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	padding: 10px;
+}
+
+.actions span {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+}

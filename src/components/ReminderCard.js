@@ -31,10 +31,9 @@ function ReminderCard({ id, title, text, time, date, openDialog, cid }) {
 			return reminder.id !== id;
 		});
 
-		db.doc(`/categories/${cid}`)
-			.update({ reminders: updatedReminders })
+		db.doc(`/reminders/${id}`)
+			.delete()
 			.then((_) => {
-				console.log('Document Updated Successfully');
 				dispatch({
 					type: 'UPDATE_REMINDERS',
 					payload: updatedReminders,
