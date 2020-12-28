@@ -20,13 +20,17 @@ function Home() {
 		const year = today.getFullYear();
 		const month = today.getMonth() + 1;
 		const date = today.getDate();
+		const hour = today.getHours();
+		const min = today.getMinutes();
 
 		const reminderDate = year + '-' + month + '-' + date;
+		const time = hour + ':' + min;
 
 		await db
 			.collection('reminders')
 			.where('uid', '==', user)
 			.where('date', '==', reminderDate)
+			.where('time', '<=', time)
 			.get()
 			.then((data) => {
 				let reminderData = [];
