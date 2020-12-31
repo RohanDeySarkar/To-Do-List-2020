@@ -52,9 +52,14 @@ function Home() {
 			});
 	};
 
+	var autoInterval = setInterval(() => {
+		fetchData();
+	}, 300000);
+
 	useEffect(() => {
 		const token = localStorage.getItem('TOKEN');
 		if (token === null) {
+			clearInterval(autoInterval);
 			history.push('/login');
 		}
 		fetchData();
