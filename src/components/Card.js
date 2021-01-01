@@ -16,9 +16,12 @@ const Card = ({
 }) => {
 	const [showDatePicker, setShowDatePicker] = useState(false);
 	const [reminderDate, setReminderDate] = useState(new Date());
+	const [remark, setRemark] = useState('');
+	const [updatedDate, setUpdatedDate] = useState('');
 
 	const handleCheck = () => {
-		onMarkComplete({ id });
+		const action = 'complete';
+		onMarkComplete({ id, action });
 	};
 
 	const handleSnooze = (date) => {
@@ -27,10 +30,35 @@ const Card = ({
 		const month = newDate.getMonth() + 1;
 		const rDate = newDate.getDate();
 
-		const updatedDate = year + '-' + month + '-' + rDate;
+		var snoozeDate;
+		if (rDate < 10) {
+			snoozeDate = '0' + rDate;
+		} else {
+			snoozeDate = rDate;
+		}
+
+		var newMonth;
+		if (month < 10) {
+			newMonth = '0' + month;
+		} else {
+			newMonth = month;
+		}
+
+		const updateDate = year + '-' + newMonth + '-' + snoozeDate;
 		setReminderDate(date);
+		setUpdatedDate(updateDate);
+	};
+
+	const handleConfirm = () => {
 		setShowDatePicker(false);
-		onSnooze({ updatedDate, id });
+		const action = 'snooze';
+		onSnooze({ remark, updatedDate, id, action });
+		setRemark('');
+	};
+
+	const handleCancel = () => {
+		setShowDatePicker(false);
+		setRemark('');
 	};
 
 	return (
@@ -49,10 +77,34 @@ const Card = ({
 							<label>Mark as complete</label>
 						</span>
 						{showDatePicker ? (
-							<DatePicker
-								selected={reminderDate}
-								onChange={(date) => handleSnooze(date)}
-							/>
+							<div className='snooze'>
+								<DatePicker
+									selected={reminderDate}
+									onChange={(date) => handleSnooze(date)}
+								/>
+								<label>Remark</label>
+								<input
+									type='text'
+									value={remark}
+									onChange={(e) => setRemark(e.target.value)}
+								/>
+								<div className='buttons'>
+									<Button
+										variant='contained'
+										color='primary'
+										onClick={handleConfirm}
+									>
+										Confirm
+									</Button>
+									<Button
+										variant='outlined'
+										color='secondary'
+										onClick={handleCancel}
+									>
+										Cancel
+									</Button>
+								</div>
+							</div>
 						) : (
 							<Button
 								variant='contained'
