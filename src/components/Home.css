@@ -9,6 +9,10 @@
 	width: 100vw;
 }
 
+.export {
+	padding: 10px;
+}
+
 .home-card {
 	display: flex;
 	flex-direction: column;
